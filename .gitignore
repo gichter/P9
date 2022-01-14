@@ -1,2 +1,3 @@
 venv/
-LITReview/LITReview/reviews/
+LITReview/__pycache__
+LITReview/reviews/__pycache__
