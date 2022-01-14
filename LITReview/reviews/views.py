@@ -12,6 +12,7 @@ from itertools import chain
 from django.db.models import CharField, Value
 
 from .forms import CreateUserForm
+from .models import *
 
 def index(request):
     return HttpResponse("index")
@@ -55,11 +56,11 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def dashboard(request):    
-    reviews = get_users_viewable_reviews(request.user)
+    reviews = Review.objects.all()
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = get_users_viewable_tickets(request.user) 
+    tickets = Ticket.objects.all() 
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
@@ -69,7 +70,7 @@ def dashboard(request):
         key=lambda post: post.time_created, 
         reverse=True
     )
-
+    
     return render(request, 'reviews/dashboard.html',  context={'posts': posts})
 
 @login_required(login_url='login')
