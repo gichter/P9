@@ -17,6 +17,7 @@ from .models import *
 def index(request):
     return HttpResponse("index")
 
+
 def registerPage(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -32,6 +33,7 @@ def registerPage(request):
     
     context = {'form': form}
     return render(request, 'accounts/register.html', context)
+
 
 def loginPage(request):
     if request.user.is_authenticated:
@@ -50,9 +52,11 @@ def loginPage(request):
     context = {}
     return render(request, 'accounts/login.html', context)
 
+
 def logoutUser(request):
     logout(request)
     return redirect('login')
+
 
 @login_required(login_url='login')
 def dashboard(request):    
@@ -73,6 +77,7 @@ def dashboard(request):
     
     return render(request, 'reviews/dashboard.html',  context={'posts': posts})
 
+
 @login_required(login_url='login')
 def posts(request):
     context = {}
@@ -83,46 +88,52 @@ def subscriptions(request):
     context = {}
     return render(request, 'reviews/subscriptions.html', context)
 
+
 @login_required(login_url='login')
 def createTicket(request):
-    form = TicketForm()
-    
+    form = TicketForm()    
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/')
-
     context = {"form":form}
     return render(request, 'reviews/ticket_form.html', context)
+
 
 @login_required(login_url='login')
 def updateTicket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    form = TicketForm(instance=ticket)
-    
+    form = TicketForm(instance=ticket)    
     if request.method == 'POST':
         form = TicketForm(request.POST, instance=ticket)
         if form.is_valid():
             form.save()
             return redirect('/')
-
     context = {"form":form}
     return render(request, 'reviews/ticket_form.html', context)
 
 
+def deleteTicket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    if request.method == 'POST':
+        ticket.delete()
+        return redirect('/')
+    context = {'item': ticket}
+    return render(request, 'reviews/delete_ticket.html', context)
+
+
 @login_required(login_url='login')
-def createReview(request):
-    form = ReviewForm()
-    
+def createReview(request, pk):
+    form = ReviewForm(initial={'ticket': pk})    
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/')
-
     context = {"form":form}
     return render(request, 'reviews/review_form.html', context)
+
 
 @login_required(login_url='login')
 def updateReview(request, pk):
@@ -134,17 +145,9 @@ def updateReview(request, pk):
         if form.is_valid():
             form.save()
             return redirect('/')
-
     context = {"form":form}
     return render(request, 'reviews/review_form.html', context)
 
-def deleteTicket(request, pk):
-    ticket = Ticket.objects.get(pk=pk)
-    if request.method == 'POST':
-        ticket.delete()
-        return redirect('/')
-    context = {'item': ticket}
-    return render(request, 'reviews/delete_ticket.html', context)
 
 def deleteReview(request, pk):
     review = Review.objects.get(pk=pk)
