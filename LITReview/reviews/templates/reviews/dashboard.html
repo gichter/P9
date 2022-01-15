@@ -23,7 +23,7 @@
                 <a href="#" class="btn btn-primary">Répondre</a>
                 {% if post.user == user %}
                     <a href="{% url 'update_ticket' post.id %}" class="btn btn-info">Modifier</a>
-                    <a href="#" class="btn btn-danger">Supprimer</a>
+                    <a href="{% url 'delete_ticket' post.id %}" class="btn btn-danger">Supprimer</a>
                 {% endif %}
             </div>
             <div class="card-footer text-muted">
@@ -47,9 +47,10 @@
                     </h5>
                 <p class="card-text">{{post.body}}</p>
                 {% if post.user == user %}
-                    <a href="{% url 'update_ticket' post.id %}" class="btn btn-info">Modifier</a>
-                    <a href="#" class="btn btn-danger">Supprimer</a>
+                    <a href="{% url 'update_review' post.id %}" class="btn btn-info">Modifier</a>
+                    <a href="{% url 'delete_review' post.id %}" class="btn btn-danger">Supprimer</a>
                 {% endif %}
+                <br/><br/>
                 {% if post.ticket %}
                     <div class="card mx-auto" style="width: 46rem;">
                         <div class="card-header">
@@ -61,7 +62,7 @@
                             <img src="{{ post.ticket.image }}"> 
                             {% if post.ticket.user == user %}
                                 <a href="{% url 'update_ticket' post.ticket.id %}" class="btn btn-info">Modifier</a>
-                                <a href="#" class="btn btn-danger">Supprimer</a>
+                                <a href="{% url 'delete_ticket' post.ticket.id %}" class="btn btn-danger">Supprimer</a>
                             {% endif %}
                         </div>
                         <div class="card-footer text-muted">

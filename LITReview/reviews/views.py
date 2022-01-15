@@ -11,7 +11,7 @@ from itertools import chain
 
 from django.db.models import CharField, Value
 
-from .forms import CreateUserForm, TicketForm
+from .forms import *
 from .models import *
 
 def index(request):
@@ -109,3 +109,47 @@ def updateTicket(request, pk):
 
     context = {"form":form}
     return render(request, 'reviews/ticket_form.html', context)
+
+
+@login_required(login_url='login')
+def createReview(request):
+    form = ReviewForm()
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+
+    context = {"form":form}
+    return render(request, 'reviews/review_form.html', context)
+
+@login_required(login_url='login')
+def updateReview(request, pk):
+    review = Review.objects.get(pk=pk)
+    form = ReviewForm(instance=review)
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+
+    context = {"form":form}
+    return render(request, 'reviews/review_form.html', context)
+
+def deleteTicket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    if request.method == 'POST':
+        ticket.delete()
+        return redirect('/')
+    context = {'item': ticket}
+    return render(request, 'reviews/delete_ticket.html', context)
+
+def deleteReview(request, pk):
+    review = Review.objects.get(pk=pk)
+    if request.method == 'POST':
+        review.delete()
+        return redirect('/')
+    context = {'item': review}
+    return render(request, 'reviews/delete_review.html', context)

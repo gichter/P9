@@ -1,0 +1,14 @@
+{% extends 'accounts/main.html'  %}
+{% load static %}
+{% block content %}
+
+<p>Delete "{{item}}"</p>
+
+<form action="{% url 'delete_review' item.id %}" method="post">
+    {% csrf_token %}
+    <a href="url '/' ">Cancel</a>
+    <input type="submit" name="Confirm">
+</form>
+
+
+{% endblock %}
