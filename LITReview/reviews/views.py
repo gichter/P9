@@ -11,7 +11,7 @@ from itertools import chain
 
 from django.db.models import CharField, Value
 
-from .forms import CreateUserForm
+from .forms import CreateUserForm, TicketForm
 from .models import *
 
 def index(request):
@@ -83,3 +83,29 @@ def subscriptions(request):
     context = {}
     return render(request, 'reviews/subscriptions.html', context)
 
+@login_required(login_url='login')
+def createTicket(request):
+    form = TicketForm()
+    
+    if request.method == 'POST':
+        form = TicketForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+
+    context = {"form":form}
+    return render(request, 'reviews/ticket_form.html', context)
+
+@login_required(login_url='login')
+def updateTicket(request, pk):
+    ticket = Ticket.objects.get(pk=pk)
+    form = TicketForm(instance=ticket)
+    
+    if request.method == 'POST':
+        form = TicketForm(request.POST, instance=ticket)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+
+    context = {"form":form}
+    return render(request, 'reviews/ticket_form.html', context)
