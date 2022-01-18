@@ -61,9 +61,10 @@ def logoutUser(request):
 @login_required(login_url='login')
 def dashboard(request):    
     reviews = Review.objects.all()
+    #reviews = get_users_viewable_reviews(request.user)
+
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
-
     tickets = Ticket.objects.all() 
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
@@ -139,6 +140,9 @@ def createReview(request, pk):
 def updateReview(request, pk):
     review = Review.objects.get(pk=pk)
     form = ReviewForm(instance=review)
+    
+    if request.user != review.user:
+        return redirect('/')
     
     if request.method == 'POST':
         form = ReviewForm(request.POST, instance=review)
