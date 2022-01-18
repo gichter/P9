@@ -1,12 +1,39 @@
 {% extends 'accounts/main.html'  %}
 {% load static %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
 {% block content %}
 
-<form method="post" action="">
-    {% csrf_token %}
-    {{form}}
-    <input type="submit" name="Submit">
-</form>
+<br />
 
+<div class="card mx-auto" style="width: 50rem;">
+    <div class="card-header">
+        <span>{{ticket.user}} a demandé une critique</span>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ticket.title}}</h5>
+        <p class="card-text">{{ticket.description}}</p>
+        <img src="/media/{{ticket.image}}">
+    </div>
+    <div class="card-footer text-muted">
+        Posté le {{ ticket.time_created|date:"d/m/Y " }} à {{ ticket.time_created|date:" H:i" }}
+    </div>
+</div>
+
+
+
+<br />
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-lg-offset-3">
+            <h3 class="text-center">Répondre à une critique</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {% crispy form %}
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

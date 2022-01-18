@@ -96,7 +96,10 @@ def createTicket(request):
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
-            form.save()
+            ticket = form.save(commit=False)
+            ticket.user = request.user
+            ticket = TicketForm(request.POST, request.FILES, instance=ticket)
+            ticket.save()
             return redirect('/')
     context = {"form":form}
     return render(request, 'reviews/ticket_form.html', context)
@@ -107,7 +110,7 @@ def updateTicket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
     form = TicketForm(instance=ticket)    
     if request.method == 'POST':
-        form = TicketForm(request.POST, instance=ticket)
+        form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
             form.save()
             return redirect('/')
@@ -126,13 +129,15 @@ def deleteTicket(request, pk):
 
 @login_required(login_url='login')
 def createReview(request, pk):
-    form = ReviewForm(initial={'ticket': pk})    
+    form = ReviewForm(initial={'ticket': pk})  
+    ticket = Ticket.objects.get(id=pk)  
+    print(ticket.user)
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/')
-    context = {"form":form}
+    context = {'form':form, 'ticket':ticket}
     return render(request, 'reviews/review_form.html', context)
 
 
@@ -153,6 +158,7 @@ def updateReview(request, pk):
     return render(request, 'reviews/review_form.html', context)
 
 
+@login_required(login_url='login')
 def deleteReview(request, pk):
     review = Review.objects.get(pk=pk)
     if request.method == 'POST':
@@ -160,3 +166,25 @@ def deleteReview(request, pk):
         return redirect('/')
     context = {'item': review}
     return render(request, 'reviews/delete_review.html', context)
+
+
+@login_required(login_url='login')
+def createTicketReview(request):
+    form_ticket = TicketForm()
+    form_review = ReviewForm()
+    if request.method == 'POST':
+        if form_ticket.is_valid() and form_review.is_valid():
+            ticket = form_ticket.save(commit=False)
+            ticket.user = request.user
+            form_ticket = TicketForm(request.POST, request.FILES, instance=ticket)
+            
+            form_ticket.save()
+            form_ticket.id
+            
+            review = form_review.save(commit=False)
+            review.user = request.user
+            review.ticket = form_ticket.id
+            form_review = ReviewForm(instance=review)
+            form_review.save()
+    context = {'form-ticket': form_ticket, 'form_review': form_review}
+    return render(request, 'reviews/create_ticket_review.html', context)

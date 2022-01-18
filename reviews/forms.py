@@ -1,6 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+
 from django.forms import ModelForm
 from .models import Ticket, Review
 
@@ -11,11 +14,23 @@ class CreateUserForm(UserCreationForm):
 
 
 class TicketForm(ModelForm):
+    helper = FormHelper()
+    helper.form_show_labels = True
+    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+    helper.form_method = 'POST'
     class Meta:
         model = Ticket
-        fields = '__all__'
-        
+        fields = ('title', 'description', 'image')
+        labels = {
+            'title': 'Nom du livre',
+            'description': 'Description',
+            'image': 'Ajouter une image'
+        }  
 class ReviewForm(ModelForm):
+    helper = FormHelper()
+    helper.form_show_labels = True
+    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+    helper.form_method = 'POST'
     class Meta:
         model = Review
         fields = '__all__'
