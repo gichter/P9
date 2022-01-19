@@ -16,7 +16,6 @@ class CreateUserForm(UserCreationForm):
 class TicketForm(ModelForm):
     helper = FormHelper()
     helper.form_show_labels = True
-    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
     helper.form_method = 'POST'
     class Meta:
         model = Ticket
@@ -29,7 +28,6 @@ class TicketForm(ModelForm):
 class ReviewForm(ModelForm):
     helper = FormHelper()
     helper.form_show_labels = True
-    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
     helper.form_method = 'POST'
     class Meta:
         model = Review

@@ -2,13 +2,21 @@
 {% load static %}
 {% block content %}
 
-<p>Delete "{{item}}"</p>
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-lg-offset-3 border p-4">
+            <p>Êtes-vous sûr de vouloir supprimer critique "{{item}}" en réponse au ticket "{{item.ticket}}" ?</p>
 
-<form action="{% url 'delete_review' item.id %}" method="post">
-    {% csrf_token %}
-    <a href="url '/' ">Cancel</a>
-    <input type="submit" name="Confirm">
-</form>
-
+            <form action="{% url 'delete_review' item.id %}" method="post">
+                {% csrf_token %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary float-right m-1">Cancel</a>
+                <input type="submit" name="Confirm" class="btn btn-danger float-right m-1">
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
