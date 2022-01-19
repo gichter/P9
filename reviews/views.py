@@ -57,15 +57,31 @@ def logoutUser(request):
     logout(request)
     return redirect('login')
 
+def get_users_viewable_reviews(user):
+    subscriptions = UserFollows.objects.filter(user=user)
+    query = Review.objects.filter(user=user)
+    for s in subscriptions:
+        query = query | Review.objects.filter(user=s.followed_user)
+    return query
+
+
+def get_users_viewable_tickets(user):
+    subscriptions = UserFollows.objects.filter(user=user)
+    query = Ticket.objects.filter(user=user)
+    for s in subscriptions:
+        query = query | Ticket.objects.filter(user=s.followed_user)
+    return query
+
+
 
 @login_required(login_url='login')
 def dashboard(request):    
-    reviews = Review.objects.all()
-    #reviews = get_users_viewable_reviews(request.user)
-
+    #reviews = Review.objects.all()
+    reviews = get_users_viewable_reviews(request.user)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
-    tickets = Ticket.objects.all() 
+    #tickets = Ticket.objects.all() 
+    tickets = get_users_viewable_tickets(request.user)
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
@@ -207,4 +223,11 @@ def subscribe(request):
             # TODO message 
             return redirect('subscriptions')
     return redirect('subscriptions')
-    
+
+def unsubscribe(request, pk):
+    if request.method == 'POST':
+        user = request.user
+        follow_instance = UserFollows.objects.get(id=pk)
+        if follow_instance.user == user:
+            follow_instance.delete()
+        return redirect('subscriptions')

@@ -26,7 +26,7 @@
                     <tr>
                         <td>{{k.followed_user}}</td>
                         <td>
-                            <form action="{% url 'subscriptions' k.id %}" method="post">
+                            <form action="{% url 'unsubscribe' k.id %}" method="post">
                                 {% csrf_token %}
                                 <input type="submit" value="Se désabonner" class="btn btn-danger float-right">
                             </form>

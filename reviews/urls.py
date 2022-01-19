@@ -13,6 +13,7 @@ urlpatterns = [
     path('posts/', views.posts, name='posts'),
     path('subscriptions/', views.subscriptions, name='subscriptions'),
     path('subscribe/', views.subscribe, name='subscribe'),
+    path('unsubscribe/<str:pk>', views.unsubscribe, name='unsubscribe'),
     path('subscriptions/<str:pk>', views.subscriptions, name='subscriptions'),
     
     path('create_ticket/', views.createTicket, name='create_ticket'),
