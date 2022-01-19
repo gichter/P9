@@ -86,7 +86,10 @@ def posts(request):
 
 @login_required(login_url='login')
 def subscriptions(request):
-    context = {}
+    user = request.user
+    followed_users = UserFollows.objects.filter(user=user)
+    following_users = UserFollows.objects.filter(followed_user=user)
+    context = {'followed_users': followed_users, 'following_users': following_users}
     return render(request, 'reviews/subscriptions.html', context)
 
 
@@ -173,6 +176,7 @@ def createTicketReview(request):
     form_ticket = TicketForm()
     form_review = ReviewForm()
     if request.method == 'POST':
+        print("ok")
         if form_ticket.is_valid() and form_review.is_valid():
             ticket = form_ticket.save(commit=False)
             ticket.user = request.user
@@ -186,5 +190,21 @@ def createTicketReview(request):
             review.ticket = form_ticket.id
             form_review = ReviewForm(instance=review)
             form_review.save()
-    context = {'form-ticket': form_ticket, 'form_review': form_review}
+    context = {'form_ticket': form_ticket, 'form_review': form_review}
     return render(request, 'reviews/create_ticket_review.html', context)
+
+def subscribe(request):
+    if request.method == 'POST':
+        followed_user_username = request.POST.get('follow_user')
+        user = request.user
+        try:
+            followed_user = User.objects.get(username=followed_user_username)
+            follow_instance = UserFollows.objects.create(user=user, followed_user=followed_user)
+            form = UserFollowsForm(instance=follow_instance)
+            if form.is_valid():
+                form.save()
+        except:
+            # TODO message 
+            return redirect('subscriptions')
+    return redirect('subscriptions')
+    

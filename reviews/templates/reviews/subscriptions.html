@@ -1,10 +1,54 @@
-
 {% extends 'accounts/main.html' %}
 
 {% block content %}
 
 {#% include 'accounts/status.html' %#}
-<span>subscriptions</span>
 <br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-lg-offset-3">
+            <h3 class="text-center">S'abonner</h3>
+            <br>
+            <form action="{% url 'subscribe' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" name="follow_user" placeholder="Nom d'utilisateur">
+                </div>
+                <input type="submit" value="S'abonner" class="btn btn-success float-right">
+            </form>
+            <br>
+            <br>
+            <h3 class="text-center">Abonnements</h3>
+            <br>
+            <table class="table">
+                <tbody>
+                    {% for k in followed_users %}
+                    <tr>
+                        <td>{{k.followed_user}}</td>
+                        <td>
+                            <form action="{% url 'subscriptions' k.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="submit" value="Se désabonner" class="btn btn-danger float-right">
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <h3 class="text-center">Abonnés</h3>
+            <br>
+            <table class="table">
+                <tbody>
+                    {% for k in following_users %}
+                    <tr>
+                        <td>{{k.user}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

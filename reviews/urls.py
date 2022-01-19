@@ -12,6 +12,8 @@ urlpatterns = [
     path('logout/', views.logoutUser, name='logout'),
     path('posts/', views.posts, name='posts'),
     path('subscriptions/', views.subscriptions, name='subscriptions'),
+    path('subscribe/', views.subscribe, name='subscribe'),
+    path('subscriptions/<str:pk>', views.subscriptions, name='subscriptions'),
     
     path('create_ticket/', views.createTicket, name='create_ticket'),
     path('update_ticket/<str:pk>', views.updateTicket, name='update_ticket'),

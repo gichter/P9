@@ -42,6 +42,10 @@ class UserFollows(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followed_user", null=True)
     followed_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followed_by", null=True)
     
+    def create_user_follows(user, followed_user):
+        user_follows = UserFollows(user, followed_user)
+        return user_follows
+    
     def check_self_following(self):
         if self.user == self.followed_user:
             return False
@@ -50,6 +54,7 @@ class UserFollows(models.Model):
     def clean(self):
         if not self.check_self_following():
             raise ValidationError('User can not follow himself')
+
     
     class Meta:
         unique_together = ('user', 'followed_user')

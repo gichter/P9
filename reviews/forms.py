@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
 from django.forms import ModelForm
-from .models import Ticket, Review
+from .models import *
 
 class CreateUserForm(UserCreationForm):
 	class Meta:
@@ -31,4 +31,9 @@ class ReviewForm(ModelForm):
     helper.form_method = 'POST'
     class Meta:
         model = Review
+        fields = '__all__'
+        
+class UserFollowsForm(ModelForm):
+    class Meta:
+        model = UserFollows
         fields = '__all__'
