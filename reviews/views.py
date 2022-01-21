@@ -96,9 +96,20 @@ def dashboard(request):
 
 
 @login_required(login_url='login')
-def posts(request):
-    context = {}
-    return render(request, 'reviews/posts.html', context)
+def posts(request):    
+    reviews = Review.objects.filter(user=request.user)
+    # returns queryset of reviews
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+    #tickets = Ticket.objects.all() 
+    tickets = Ticket.objects.filter(user=request.user)
+    # returns queryset of tickets
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+    posts = sorted(
+        chain(reviews, tickets), 
+        key=lambda post: post.time_created, 
+        reverse=True
+    )
+    return render(request, 'reviews/posts.html',  context={'posts': posts})
 
 @login_required(login_url='login')
 def subscriptions(request):
@@ -120,6 +131,9 @@ def createTicket(request):
             ticket = TicketForm(request.POST, request.FILES, instance=ticket)
             ticket.save()
             return redirect('/')
+    
+    if not form.helper.inputs:
+        form.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
     context = {"form":form}
     return render(request, 'reviews/ticket_form.html', context)
 
@@ -133,6 +147,9 @@ def updateTicket(request, pk):
         if form.is_valid():
             form.save()
             return redirect('/')
+        if not form.helper.inputs:
+            form.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
+    
     context = {"form":form}
     return render(request, 'reviews/ticket_form.html', context)
 
@@ -156,6 +173,9 @@ def createReview(request, pk):
         if form.is_valid():
             form.save()
             return redirect('/')
+        if not form.helper.inputs:
+            form.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
+        
     context = {'form':form, 'ticket':ticket}
     return render(request, 'reviews/review_form.html', context)
 
@@ -163,6 +183,7 @@ def createReview(request, pk):
 @login_required(login_url='login')
 def updateReview(request, pk):
     review = Review.objects.get(pk=pk)
+    ticket = review.ticket
     form = ReviewForm(instance=review)
     
     if request.user != review.user:
@@ -173,7 +194,10 @@ def updateReview(request, pk):
         if form.is_valid():
             form.save()
             return redirect('/')
-    context = {"form":form}
+    if not form.helper.inputs:
+        form.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
+        
+    context = {"form":form, 'ticket':ticket}
     return render(request, 'reviews/review_form.html', context)
 
 
@@ -191,21 +215,31 @@ def deleteReview(request, pk):
 def createTicketReview(request):
     form_ticket = TicketForm()
     form_review = ReviewForm()
+    
+    form_ticket.helper.inputs = []
+    form_review.helper.inputs = []
+    
     if request.method == 'POST':
-        print("ok")
-        if form_ticket.is_valid() and form_review.is_valid():
+        print(request.POST)
+        try:
+            print("ok")
             ticket = form_ticket.save(commit=False)
             ticket.user = request.user
             form_ticket = TicketForm(request.POST, request.FILES, instance=ticket)
             
             form_ticket.save()
-            form_ticket.id
+            print(form_ticket.id)
             
             review = form_review.save(commit=False)
             review.user = request.user
             review.ticket = form_ticket.id
             form_review = ReviewForm(instance=review)
             form_review.save()
+        except:
+            redirect()
+            
+    if not form_review.helper.inputs:
+        form_review.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
     context = {'form_ticket': form_ticket, 'form_review': form_review}
     return render(request, 'reviews/create_ticket_review.html', context)
 

@@ -13,7 +13,9 @@
     <div class="card-body">
         <h5 class="card-title">{{ticket.title}}</h5>
         <p class="card-text">{{ticket.description}}</p>
+        {% if ticket.image %}
         <img src="/media/{{ticket.image}}">
+        {% endif %}
     </div>
     <div class="card-footer text-muted">
         Posté le {{ ticket.time_created|date:"d/m/Y " }} à {{ ticket.time_created|date:" H:i" }}
@@ -31,7 +33,6 @@
             <form method="POST">
                 {% csrf_token %}
                 {% crispy form %}
-                <input type="submit" name="Valider">
             </form>
         </div>
     </div>

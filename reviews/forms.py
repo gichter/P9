@@ -16,7 +16,8 @@ class CreateUserForm(UserCreationForm):
 class TicketForm(ModelForm):
     helper = FormHelper()
     helper.form_show_labels = True
-    helper.form_method = 'POST'
+    helper.form_method = 'POST'    
+
     class Meta:
         model = Ticket
         fields = ('title', 'description', 'image')
@@ -28,12 +29,28 @@ class TicketForm(ModelForm):
 class ReviewForm(ModelForm):
     helper = FormHelper()
     helper.form_show_labels = True
-    helper.form_method = 'POST'
+    helper.form_method = 'POST'    
+
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ('headline', 'rating', 'body')
+        
+        labels = {
+            'headline': 'Titre de la critique',
+            'rating': 'Note sur 5',
+            'body': 'Critique'
+        }  
         
 class UserFollowsForm(ModelForm):
     class Meta:
         model = UserFollows
+        fields = '__all__'
+        
+
+class TicketReviewForm(ModelForm):
+    helper = FormHelper()
+    helper.form_show_labels = True
+    helper.form_method = 'POST'    
+    class Meta:
+        model = Ticket
         fields = '__all__'
