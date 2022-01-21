@@ -218,26 +218,30 @@ def createTicketReview(request):
     
     form_ticket.helper.inputs = []
     form_review.helper.inputs = []
-    
+    form_ticket.helper.form_tag = False
+    form_review.helper.form_tag = False
     if request.method == 'POST':
-        print(request.POST)
         try:
-            print("ok")
             ticket = form_ticket.save(commit=False)
             ticket.user = request.user
             form_ticket = TicketForm(request.POST, request.FILES, instance=ticket)
-            
-            form_ticket.save()
-            print(form_ticket.id)
+            ticket_id = form_ticket.save()
             
             review = form_review.save(commit=False)
             review.user = request.user
-            review.ticket = form_ticket.id
-            form_review = ReviewForm(instance=review)
-            form_review.save()
-        except:
-            redirect()
+            review.ticket = ticket_id
+            review.rating = request.POST.get('rating')
+            form_review = ReviewForm(request.POST, instance=review)
+            #review.ticket = form_ticket.id
             
+            if form_review.is_valid():
+                form_review.save()
+            else:
+                ticket_id.delete()
+        except Exception as e:
+            print(e)
+            return redirect('create_review')
+        return redirect('dashboard')
     if not form_review.helper.inputs:
         form_review.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
     context = {'form_ticket': form_ticket, 'form_review': form_review}

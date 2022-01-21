@@ -20,7 +20,10 @@
         <h5 class="card-title">{{post.title}}</h5>
         <p class="card-text">{{post.description}}</p>
         {% if post.image %}
-        <img src="media/{{ post.image }}" class="img-fluid mx-auto" style="width: 50%; height:50%;">
+        <div>
+            <img src="media/{{ post.image }}" class="img-fluid mx-auto" style="width: 50%; height:50%;">
+
+        </div>
         {% endif %}
         <br />
         <br />
@@ -68,6 +71,8 @@
                 {% if post.ticket.image %}
                 <img src="media/{{ post.ticket.image }}" class="img-fluid mx-auto" style="width: 50%; height:50%;">
                 {% endif %}
+                <br />
+                <br />
                 {% if post.ticket.user == user %}
                 <a href="{% url 'update_ticket' post.ticket.id %}" class="btn btn-info">Modifier</a>
                 <a href="{% url 'delete_ticket' post.ticket.id %}" class="btn btn-danger">Supprimer</a>
