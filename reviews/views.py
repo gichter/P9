@@ -235,14 +235,12 @@ def createTicketReview(request):
             review.ticket = ticket_id
             review.rating = request.POST.get('rating')
             form_review = ReviewForm(request.POST, instance=review)
-            #review.ticket = form_ticket.id
             
             if form_review.is_valid():
                 form_review.save()
             else:
                 ticket_id.delete()
         except Exception as e:
-            print(e)
             return redirect('create_review')
         return redirect('dashboard')
     if not form_review.helper.inputs:
