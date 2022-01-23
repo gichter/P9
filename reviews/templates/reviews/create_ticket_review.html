@@ -13,6 +13,7 @@
             <form method="POST" action="{% url 'create_review' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% crispy form_ticket %}
+                {% load crispy_forms_tags %}
                 {% crispy form_review %}
             </form>
         </div>

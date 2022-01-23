@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from crispy_forms.layout import Submit
 
 from itertools import chain
 
@@ -218,6 +219,7 @@ def createTicketReview(request):
     
     form_ticket.helper.inputs = []
     form_review.helper.inputs = []
+    
     form_ticket.helper.form_tag = False
     form_review.helper.form_tag = False
     if request.method == 'POST':
@@ -225,7 +227,8 @@ def createTicketReview(request):
             ticket = form_ticket.save(commit=False)
             ticket.user = request.user
             form_ticket = TicketForm(request.POST, request.FILES, instance=ticket)
-            ticket_id = form_ticket.save()
+            if form_ticket.is_valid():
+                ticket_id = form_ticket.save()
             
             review = form_review.save(commit=False)
             review.user = request.user

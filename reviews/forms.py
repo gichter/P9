@@ -2,10 +2,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
 
 from django.forms import ModelForm
 from .models import *
+from crispy_forms.bootstrap import InlineRadios
 
 class CreateUserForm(UserCreationForm):
 	class Meta:
@@ -27,10 +28,13 @@ class TicketForm(ModelForm):
             'image': 'Ajouter une image'
         }  
 class ReviewForm(ModelForm):
-    helper = FormHelper()
-    helper.form_show_labels = True
-    helper.form_method = 'POST'    
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = True
+        self.helper.form_method = 'POST'
+        
     class Meta:
         model = Review
         fields = ('headline', 'rating', 'body')
@@ -46,11 +50,3 @@ class UserFollowsForm(ModelForm):
         model = UserFollows
         fields = '__all__'
         
-
-class TicketReviewForm(ModelForm):
-    helper = FormHelper()
-    helper.form_show_labels = True
-    helper.form_method = 'POST'    
-    class Meta:
-        model = Ticket
-        fields = '__all__'
