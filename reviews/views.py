@@ -60,9 +60,14 @@ def logoutUser(request):
 
 def get_users_viewable_reviews(user):
     subscriptions = UserFollows.objects.filter(user=user)
+    ticket_query = Ticket.objects.filter(user=user)
     query = Review.objects.filter(user=user)
+        
+    
     for s in subscriptions:
         query = query | Review.objects.filter(user=s.followed_user)
+    for t in ticket_query:
+        query = query | Review.objects.filter(ticket=t)
     return query
 
 
@@ -168,15 +173,16 @@ def deleteTicket(request, pk):
 def createReview(request, pk):
     form = ReviewForm(initial={'ticket': pk})  
     ticket = Ticket.objects.get(id=pk)  
-    print(ticket.user)
+    if not form.helper.inputs:
+        form.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
     if request.method == 'POST':
         form = ReviewForm(request.POST)
+        form.instance.ticket = ticket
+        form.instance.user = request.user
+
         if form.is_valid():
             form.save()
             return redirect('/')
-        if not form.helper.inputs:
-            form.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
-        
     context = {'form':form, 'ticket':ticket}
     return render(request, 'reviews/review_form.html', context)
 
