@@ -8,7 +8,7 @@ This project is a web app allowing users to review books and ask reviews about a
 clone the project using GitHub CLI
 
 ```bash
-gh repo clone gichter/P9
+git clone git://github.com/gichter/P9.git
 ```
 
 Open a terminal in the root folder, then create a new virtual environment
