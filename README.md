@@ -1,5 +1,5 @@
 
-# LITReview Webb Application
+# LITReview Web Application
 
 This project is a web app allowing users to review books and ask reviews about a specific book. Following other users system and a reactive dashboard are included.
 
