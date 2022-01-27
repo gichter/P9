@@ -75,7 +75,7 @@ def get_users_viewable_tickets(user):
     subscriptions = UserFollows.objects.filter(user=user)
     query = Ticket.objects.filter(user=user)
     for s in subscriptions:
-        query = query | Ticket.objects.filter(user=s.followed_user)
+        query = query | Ticket.objects.filter(user=s.followed_user)        
     return query
 
 
@@ -91,9 +91,15 @@ def dashboard(request):
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
+    final_tickets = []
+
+    for t in tickets:
+        if not Review.objects.filter(ticket=t).exists():
+            final_tickets.append(t)
+    
     # combine and sort the two types of posts
     posts = sorted(
-        chain(reviews, tickets), 
+        chain(reviews, final_tickets), 
         key=lambda post: post.time_created, 
         reverse=True
     )
