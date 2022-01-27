@@ -33,12 +33,6 @@ Use the packet manager [pip](https://pip.pypa.io/en/stable/) to install the proj
 pip install -r requirements.txt
 ```
 
-Create migrations
-
-```bash
-python manage.py makemigrations
-```
-
 Apply the migrations
 
 ```bash
