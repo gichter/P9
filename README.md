@@ -1,5 +1,5 @@
 
-# LITReview Webb Application
+# LITReview Web Application
 
 This project is a web app allowing users to review books and ask reviews about a specific book. Following other users system and a reactive dashboard are included.
 
@@ -31,12 +31,6 @@ Use the packet manager [pip](https://pip.pypa.io/en/stable/) to install the proj
 
 ```bash
 pip install -r requirements.txt
-```
-
-Create migrations
-
-```bash
-python manage.py makemigrations
 ```
 
 Apply the migrations
