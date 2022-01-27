@@ -153,7 +153,10 @@ def createTicket(request):
 @login_required(login_url='login')
 def updateTicket(request, pk):
     ticket = Ticket.objects.get(pk=pk)
-    form = TicketForm(instance=ticket)    
+    form = TicketForm(instance=ticket)   
+    if not form.helper.inputs:
+        form.helper.add_input(Submit('submit', 'Valider', css_class='btn-primary float-right'))
+    
     if request.method == 'POST':
         form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
