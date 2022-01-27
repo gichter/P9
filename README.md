@@ -10,6 +10,11 @@ clone the project using GitHub CLI
 ```bash
 git clone git://github.com/gichter/P9.git
 ```
+Go to the project directory
+
+```bash
+cd P9/
+```
 
 Open a terminal in the root folder, then create a new virtual environment
 
